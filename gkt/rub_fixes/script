@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+dir=/work/gkt.control/files/bases/complete
+backupdir=//work/tmp/rub/backup
+old=$PWD
+cd $dir
+bases=$(ls ??.2014????.txt | awk -F"." '{print $1}' | sort -u)
+for b in $bases; do
+    cp $(ls -t $b.2014????.txt | head -n1) $backupdir 
+done
+cd -

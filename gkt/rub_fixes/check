@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+dir=//work/tmp/rub/bases
+diffdir=/home/boyko/rub_diff
+old=$PWD
+cd $dir
+#bases=$(ls ??.2014????.txt | awk -F"." '{print $1}' | sort -u)
+bases="il"
+for b in $bases; do
+    d=$(ls $diffdir/$b*)
+    b=$(ls $b*.txt)
+# http://www.gnu.org/software/gawk/manual/html_node/Two_002dway-I_002fO.html#Two_002dway-I_002fO
+#    echo $d
+#    awk -F";" -v base="$d" '{ OFS=";"; cmd="/home/qtgkt/rub/rub " base " \"" $1 "\""; if ((cmd |& getline value) > 0) { $2=value;} print $0; close(cmd)}' $b > "$b.new"
+    # /home/qtgkt/rub/rub $b $d | sort -t\; -k4,4 -nr > "$b.new" 
+
+#
+# wc
+#
+    loc_base=$(wc -l $b | cut -d' ' -f1)
+    loc_new=$(wc -l $b.new | cut -d' ' -f1)
+    if [[ $loc_base -eq $loc_new ]]; then
+        echo "$b $b.new loc equal $loc_base $loc_new" 
+    else
+        echo "$b $b.new loc FAIL $loc_base $loc_new" 
+    fi
+
+#
+# awk
+#
+    vol_base=$(awk -F\; '{vol += $4} END {printf "%.0f\n", vol}' $b  )
+    vol_new=$(awk -F\; '{vol += $4} END {printf "%.0f\n", vol}' $b.new  )
+    if [[ $vol_base -eq $vol_new ]]; then
+        echo "$b $b.new vol equal $vol_base $vol_new" 
+    else
+        echo "$b $b.new vol FAIL $vol_base $vol_new" 
+    fi
+
+#
+# cpc 
+#
+    cpc_base=$(awk -F\; '{cpc += $2} END {printf "%.0f\n", cpc}' $b  )
+    cpc_new=$(awk -F\; '{cpc += $2} END {printf "%.0f\n", cpc}' $b.new  )
+    if [[ $cpc_base -ge $cpc_new ]]; then
+        echo "$b $b.new cpc equal $cpc_base $cpc_new" 
+    else
+        echo "$b $b.new cpc FAIL $cpc_base $cpc_new" 
+    fi
+
+done
+cd -

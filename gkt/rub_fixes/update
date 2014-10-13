@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+dir=//work/tmp/rub/bases
+diffdir=/home/boyko/rub_diff
+old=$PWD
+cd $dir
+bases=$(ls ??.2014????.txt | awk -F"." '{print $1}' | sort -u)
+for b in $bases; do
+    d=$(ls $diffdir/$b*)
+    b=$(ls $b*)
+# http://www.gnu.org/software/gawk/manual/html_node/Two_002dway-I_002fO.html#Two_002dway-I_002fO
+#    echo $d
+#    awk -F";" -v base="$d" '{ OFS=";"; cmd="/home/qtgkt/rub/rub " base " \"" $1 "\""; if ((cmd |& getline value) > 0) { $2=value;} print $0; close(cmd)}' $b > "$b.new"
+    /home/qtgkt/rub/rub $b $d | sort -t\; -k4,4 -nr > "$b.new" 
+done
+cd -

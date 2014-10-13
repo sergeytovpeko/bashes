@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+dir=//work/tmp/rub/bases
+gktdir=/work/gkt.control/files/bases/complete
+cd $dir
+bases=$(ls nl.2014????.txt)
+for b in $bases; do
+    #cp "$gktdir"/$b "$gktdir"/$b.before_rub
+    # cp "$gktdir"/$b.gz "$gktdir"/$b.before_rub.gz
+
+    cp "$dir"/$b.new "$gktdir"/$b
+    gzip < $gktdir/$b > $gktdir/$b.gz
+
+# remove
+#    rm $gktdir/$b
+#    rm $gktdir/$b.gz
+done
+cd -
